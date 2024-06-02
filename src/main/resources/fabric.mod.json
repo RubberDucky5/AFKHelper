@@ -1,0 +1,38 @@
+{
+	"schemaVersion": 1,
+	"id": "afkhelper",
+	"version": "${version}",
+	"name": "AFKHelper",
+	"description": "Assists in Being AFK",
+	"authors": [
+		"RubberDucky"
+	],
+	"contact": {
+		"homepage": "https://fabricmc.net/",
+		"sources": "https://github.com/FabricMC/fabric-example-mod"
+	},
+	"license": "CC0-1.0",
+	"icon": "assets/afkhelper/icon.png",
+	"environment": "*",
+	"entrypoints": {
+		"client": [
+			"rubberduck.afkhelper.AFKHelperClient"
+		]
+	},
+	"mixins": [
+		"afkhelper.mixins.json",
+		{
+			"config": "afkhelper.client.mixins.json",
+			"environment": "client"
+		}
+	],
+	"depends": {
+		"fabricloader": ">=0.15.11",
+		"minecraft": "~1.20.6",
+		"java": ">=21",
+		"fabric-api": "*"
+	},
+	"suggests": {
+		"another-mod": "*"
+	}
+}
