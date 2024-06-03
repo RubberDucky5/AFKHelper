@@ -25,6 +25,7 @@ public class AFKHelperClient implements ClientModInitializer {
 	public static SimpleOption<Boolean> autoReconnect = SimpleOption.ofBoolean("Auto Reconnect", SimpleOption.emptyTooltip(), false, value -> {});
 	public static SimpleOption<Boolean> autoSwing = SimpleOption.ofBoolean("Auto Swing", SimpleOption.emptyTooltip(), false, value -> {});
 	public static SimpleOption<Double> swingSpeed = new SimpleOption<>("Swing Speed", SimpleOption.emptyTooltip(), (optionText, value) -> GameOptions.getGenericValueText(optionText, Text.literal(  String.format("%.2fs", value))), new SimpleOption.ValidatingIntSliderCallbacks(0, 100).withModifier(pv -> (double)pv / 10.0, v -> (int)(v * 10.0)), 2.7, value -> {});
+	public static SimpleOption<Boolean> holdRightClick = SimpleOption.ofBoolean("Hold Right Click", SimpleOption.emptyTooltip(), false, value -> {});
 
 	private static ServerInfo lastServer;
 

@@ -25,6 +25,7 @@ public class AFKMenuScreen extends GameOptionsScreen {
         optionButtons = addDrawableChild(new OptionListWidget(this.client, this.width, this.height, this));
         optionButtons.addSingleOptionEntry(AFKHelperClient.autoReconnect);
         optionButtons.addAll(autoSwing);
+        optionButtons.addSingleOptionEntry(AFKHelperClient.holdRightClick);
 
         super.init();
     }
