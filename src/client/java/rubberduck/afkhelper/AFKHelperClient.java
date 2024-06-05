@@ -14,7 +14,9 @@ import net.minecraft.client.network.ServerInfo;
 import net.minecraft.client.option.GameOptions;
 import net.minecraft.client.option.SimpleOption;
 import net.minecraft.entity.Entity;
+import net.minecraft.item.ItemStack;
 import net.minecraft.text.Text;
+import net.minecraft.util.ActionResult;
 import net.minecraft.util.Hand;
 import net.minecraft.util.hit.BlockHitResult;
 import net.minecraft.util.hit.EntityHitResult;
@@ -38,6 +40,62 @@ public class AFKHelperClient implements ClientModInitializer {
 	}
 
 	private void tick(MinecraftClient client) {
+
+		if ( holdRightClick.getValue() ) {
+			client.itemUseCooldown = 4;
+			if (client.crosshairTarget == null) {
+
+			}
+			for (Hand hand : Hand.values()) {
+				ActionResult actionResult3;
+				ItemStack itemStack = client.player.getStackInHand(hand);
+				if (!itemStack.isItemEnabled(client.world.getEnabledFeatures())) {
+					return;
+				}
+				if (client.crosshairTarget != null) {
+					switch (client.crosshairTarget.getType()) {
+						case ENTITY: {
+							EntityHitResult entityHitResult = (EntityHitResult)client.crosshairTarget;
+							Entity entity = entityHitResult.getEntity();
+							if (!client.world.getWorldBorder().contains(entity.getBlockPos())) {
+								return;
+							}
+							ActionResult actionResult = client.interactionManager.interactEntityAtLocation(client.player, entity, entityHitResult, hand);
+							if (!actionResult.isAccepted()) {
+								actionResult = client.interactionManager.interactEntity(client.player, entity, hand);
+							}
+							if (!actionResult.isAccepted()) break;
+							if (actionResult.shouldSwingHand()) {
+								client.player.swingHand(hand);
+							}
+							return;
+						}
+						case BLOCK: {
+							BlockHitResult blockHitResult = (BlockHitResult)client.crosshairTarget;
+							int i = itemStack.getCount();
+							ActionResult actionResult2 = client.interactionManager.interactBlock(client.player, hand, blockHitResult);
+							if (actionResult2.isAccepted()) {
+								if (actionResult2.shouldSwingHand()) {
+									client.player.swingHand(hand);
+									if (!itemStack.isEmpty() && (itemStack.getCount() != i || client.interactionManager.hasCreativeInventory())) {
+										client.gameRenderer.firstPersonRenderer.resetEquipProgress(hand);
+									}
+								}
+								return;
+							}
+							if (actionResult2 != ActionResult.FAIL) break;
+							return;
+						}
+					}
+				}
+				if (itemStack.isEmpty() || !(actionResult3 = client.interactionManager.interactItem(client.player, hand)).isAccepted()) continue;
+				if (actionResult3.shouldSwingHand()) {
+					client.player.swingHand(hand);
+				}
+				client.gameRenderer.firstPersonRenderer.resetEquipProgress(hand);
+				return;
+			}
+		}
 
         if ( autoSwing.getValue() && asTimer <= 0 && client.crosshairTarget != null) {
 
